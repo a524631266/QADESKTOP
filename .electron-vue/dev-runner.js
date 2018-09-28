@@ -74,6 +74,22 @@ function startRenderer () {
     )
 
     server.listen(9080)
+    var io = socketio(server)
+    function laysetmessage(socket){
+      socket.emit("c_hi","hello!")
+    }
+    io.on('connection',function(socket){
+      socket.on("hi",function(data){ // 接收客户端的hi事件
+        console.dir("hi客户端接收的data"+data)
+        setInterval(laysetmessage,1000,socket)
+          // socket.emit("c_hi","hello!")//返回当个客户端socket.on中的c_hi事件
+      })
+      socket.on("disconnect",function(data){ // 接收客户端的hi事件
+        console.dir("disconnect客户端接收的data"+data)
+        socket.emit("c_leave","某某离开了!")//返回单个客户端socket.on中的c_hi事件
+        // socket.broadcast.emit("c_leave","某某离开了!")//返回所有客户端socket.on中的c_hi事件
+      })
+    })
   })
 }
 
